@@ -30,6 +30,11 @@ def calcPS(stock_price, shares, sales):
 	PS_value = share_price / (total_sales / amount_shares)
 	return f'{PS_value:.2f}'
 
+def displayData(*argv):
+	# How many lines will be printed
+	rows = len(argv)
+	for value in rows:
+		print(value)
 
 list_of_PB = []
 list_of_PS = []
@@ -42,11 +47,11 @@ with open('osake.csv') as csv_file:
 		if row == 0:
 			# skip first row
 			row += 1
-			print(value)
 		else:
 			row += 1
 			list_of_PB.append(calcPB(value[1], value[2], value[3], value[4]))
 			list_of_PS.append(calcPS(value[1], value[2], value[0]))
 
-print(list_of_PB)
-print(list_of_PS)
+displayData(list_of_PB, list_of_PS)
+# print(list_of_PB)
+# print(list_of_PS)
