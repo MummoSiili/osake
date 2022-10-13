@@ -1,4 +1,4 @@
-import csv
+import csv, sys
 
 def amountOfStocks():
 	stocks = int(input("Amount of stocks: "))
@@ -46,7 +46,12 @@ list_of_PS = []
 list_of_quarters = []
 list_of_PE = []
 
-with open('osake.csv') as csv_file:
+'''
+Take CSV file as command line argument e.g. osake.py osake.csv
+'''
+osake_file = sys.argv
+
+with open(osake_file[1]) as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 
 	row = 0
@@ -61,5 +66,3 @@ with open('osake.csv') as csv_file:
 			list_of_quarters.append(value[5])
 
 displayData(list_of_quarters,list_of_PB, list_of_PS)
-# print(list_of_PB)
-# print(list_of_PS)
