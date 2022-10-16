@@ -45,7 +45,7 @@ def calcPSTTM(PS_list, stock_price):
 			float_value += float(value)
 
 		ps_ttm = share_price / float_value
-		palaute = str(ps_ttm) + '*'
+		palaute = str(f'{ps_ttm:.2f}') + '*'
 		return palaute
 
 	elif list_lenght == 4:
@@ -54,7 +54,7 @@ def calcPSTTM(PS_list, stock_price):
 			float_value += float(value)
 
 		ps_ttm = share_price / float_value
-		return str(ps_ttm)
+		return str(f'{ps_ttm:.2f}')
 
 	elif list_lenght > 4:
 
@@ -63,7 +63,7 @@ def calcPSTTM(PS_list, stock_price):
 			float_value += float(value)
 
 		ps_ttm = share_price / float_value
-		return str(ps_ttm)
+		return str(f'{ps_ttm:.2f}')
 
 
 def displayData(*args):
@@ -75,7 +75,7 @@ def displayData(*args):
 
 	for i in range(rows):
 		ttm_i = i + 1
-		ps_ttm = calcPSTTM(args[2][:ttm_i], args[1][i])
+		ps_ttm = calcPSTTM(args[2][:ttm_i], args[3][i])
 		print(args[0][i]+'\t\t'+args[1][i]+'\t'+args[2][i]+'\t'+ps_ttm)
 
 
@@ -83,6 +83,7 @@ list_of_PB = []
 list_of_PS = []
 list_of_quarters = []
 list_of_PE = []
+list_of_stock_price = []
 
 '''
 Take CSV file as command line argument e.g. osake.py osake.csv
@@ -102,5 +103,6 @@ with open(osake_file[1]) as csv_file:
 			list_of_PB.append(calcPB(value[1], value[2], value[3], value[4]))
 			list_of_PS.append(calcPS(value[1], value[2], value[0]))
 			list_of_quarters.append(value[5])
+			list_of_stock_price.append(value[1])
 
-displayData(list_of_quarters,list_of_PB, list_of_PS)
+displayData(list_of_quarters, list_of_PB, list_of_PS, list_of_stock_price)
