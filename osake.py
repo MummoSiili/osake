@@ -30,15 +30,53 @@ def calcPS(stock_price, shares, sales):
 	PS_value = share_price / (total_sales / amount_shares)
 	return f'{PS_value:.2f}'
 
+def calcPSTTM(PS_list, stock_price):
+	'''
+	Combine four latest quarters together and return sum
+	'''
+	list_lenght = len(PS_list)
+	share_price = float(stock_price)
+	float_value = 0.0 # format value
+	ps_ttm = 0.0
+
+	if list_lenght < 4:
+		# List less than four quarters are not TTM. Return with mark.
+		for value in PS_list:
+			float_value += float(value)
+
+		ps_ttm = share_price / float_value
+		palaute = str(ps_ttm) + '*'
+		return palaute
+
+	elif list_lenght == 4:
+
+		for value in PS_list:
+			float_value += float(value)
+
+		ps_ttm = share_price / float_value
+		return str(ps_ttm)
+
+	elif list_lenght > 4:
+
+		for value in PS_list[-4:]:
+			# Last four quarters of the list
+			float_value += float(value)
+
+		ps_ttm = share_price / float_value
+		return str(ps_ttm)
+
+
 def displayData(*args):
 	# How many lines will be printed
 	rows = len(args[0])
 
-	print('quarter\t\t P/B\t P/S')
-	print('_______\t\t ___\t ___')
+	print('quarter\t\t P/B\t P/S\t P/S(TTM)')
+	print('_______\t\t ___\t ____\t ________')
 
 	for i in range(rows):
-		print(args[0][i]+'\t\t'+args[1][i]+'\t'+args[2][i])
+		ttm_i = i + 1
+		ps_ttm = calcPSTTM(args[2][:ttm_i], args[1][i])
+		print(args[0][i]+'\t\t'+args[1][i]+'\t'+args[2][i]+'\t'+ps_ttm)
 
 
 list_of_PB = []
