@@ -78,8 +78,6 @@ def displayData(*args):
 		ps_ttm = calcPSTTM(args[2][:ttm_i], args[3][i])
 		print(args[0][i]+'\t\t'+args[1][i]+'\t'+args[2][i]+'\t'+ps_ttm)
 
-def scaleValues(csv_line, row_length):
-	pass 
 
 list_of_PB = []
 list_of_PS = []
@@ -95,15 +93,13 @@ osake_file = sys.argv
 with open(osake_file[1]) as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	row = 0
-	
+
 	for value in csv_reader:
 		if row == 0:
 			# skip first row
 			row += 1
 		else:
 			row += 1
-			row_length = len(value) # how many columns in a row
-			#value = scaleValues(value,row_length)
 			list_of_PB.append(calcPB(value[1], value[2], value[3], value[4]))
 			list_of_PS.append(calcPS(value[1], value[2], value[0]))
 			list_of_quarters.append(value[5])
