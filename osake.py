@@ -1,17 +1,45 @@
 import csv, sys
 
 def calcPB(stock_price, shares, assets, liabilities):
-	share_price = float(stock_price)
-	amount_shares = int(shares)
-	total_assets = int(assets)
-	total_liabilities = int(liabilities)
+	if isInteger == True:
+		share_price = int(stock_price)
+	else:
+		share_price = float(stock_price)
+
+	if isInteger == True:
+		amount_shares = int(shares)
+	else:
+		amount_shares = float(shares)
+
+	if isInteger == True:
+		total_assets = int(assets)
+	else:
+		total_assets = float(assets)
+
+	if isInteger == True:
+		total_liabilities = int(liabilities)
+	else:
+		total_liabilities = float(liabilities)
+	
 	PB_value = share_price / ((total_assets - total_liabilities) / amount_shares)
 	return f'{PB_value:.2f}'
 
 def calcPS(stock_price, shares, sales):
-	share_price = float(stock_price)
-	amount_shares = int(shares)
-	total_sales = int(sales)
+	if isInteger == True:
+		share_price = int(stock_price)
+	else:
+		share_price = float(stock_price)
+
+	if isInteger == True:
+		amount_shares = int(shares)
+	else:
+		amount_shares = float(shares)
+
+	if isInteger == True:
+		total_sales = int(sales)
+	else:
+		total_sales = float(sales)
+
 	PS_value = share_price / (total_sales / amount_shares)
 	return f'{PS_value:.2f}'
 
@@ -107,7 +135,7 @@ def scaleValue(csv_line):
 				palaute = value * multiplier
 				value = str(palaute)	# replace original value
 				modified_list.append(value)
-	
+
 	return modified_list
 
 list_of_PB = []
