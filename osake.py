@@ -20,7 +20,7 @@ def calcPB(stock_price, shares, assets, liabilities):
 		total_liabilities = int(liabilities)
 	else:
 		total_liabilities = float(liabilities)
-	
+
 	PB_value = share_price / ((total_assets - total_liabilities) / amount_shares)
 	return f'{PB_value:.2f}'
 
@@ -122,7 +122,7 @@ def scaleValue(csv_line):
 			elif value[-1:] == 'K' or value[-1:] == 'k':
 				multiplier = 1000
 			else:
-				pass	# no need to modify
+				modified_list.append(value)
 
 			if isInteger(value[:-1]) == True:
 				value = int(value[:-1])
@@ -131,10 +131,13 @@ def scaleValue(csv_line):
 				modified_list.append(value)
 
 			else:
-				value = float(value[:-1])
-				palaute = value * multiplier
-				value = str(palaute)	# replace original value
-				modified_list.append(value)
+				if isInteger(value[:-1]) == False: # This will skip quarterly string
+					pass
+				else:
+					value = float(value[:-1])
+					palaute = value * multiplier
+					value = str(palaute)	# replace original value
+					modified_list.append(value)
 
 	return modified_list
 
