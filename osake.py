@@ -131,7 +131,7 @@ def scaleValue(csv_line):
 				modified_list.append(value)
 
 			else:
-				if isInteger(value[:-1]) == False: # This will skip quarterly string
+				if isInteger(value[:-1]) and isInteger(value[:-2])== False: # This will skip quarterly string
 					pass
 				else:
 					value = float(value[:-1])
@@ -141,16 +141,25 @@ def scaleValue(csv_line):
 
 	return modified_list
 
+'''
+GLOBAL VARIABLES
+'''
 list_of_PB = []
 list_of_PS = []
 list_of_quarters = []
 list_of_PE = []
 list_of_stock_price = []
+key_list = []
+
+stock_dict = {}
+
+osake_file = sys.argv
 
 '''
 Take CSV file as command line argument e.g. osake.py osake.csv
 '''
-osake_file = sys.argv
+
+'''
 
 with open(osake_file[1]) as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
@@ -169,3 +178,70 @@ with open(osake_file[1]) as csv_file:
 			list_of_stock_price.append(value[1])
 
 displayData(list_of_quarters, list_of_PB, list_of_PS, list_of_stock_price)
+'''
+
+'''
+Version 2
+
+Create dictionary with preliminary stock values.
+'''
+with open(osake_file[1]) as csv_file:
+	csv_reader = csv.reader(csv_file, delimiter=',')
+	row = 0
+
+	for value in csv_reader:
+		'''
+		First value of the CSV file must be quarter. Those will be used dict keys.
+		'''
+		length = len(value)
+
+		if row == 0:
+			# skip first row
+			row += 1
+
+			for i in range(length):
+				'''
+				Collect first row value to a list that will be placed to dict
+				keys later in else statement.
+				'''
+				if i == 0:
+					pass
+				else:
+					key_list.append(value[i]) # key_list is a global variable
+
+		else:
+			'''
+			Fill dict with keys i.e. stock data
+			'''
+			stock_dict[value[0]] = {}
+			key_list_length = len(key_list)
+
+			for i in range(key_list_length):
+				stock_dict[value[0]][key_list[i]] = ''
+
+
+'''
+Fill dictionary with real data
+'''
+
+with open(osake_file[1]) as csv_file:
+	csv_reader = csv.reader(csv_file, delimiter=',')
+	row = 0
+
+
+	for value in csv_reader:
+		first_element = 0
+		if row == 0:
+			row += 1 # skip first row
+		else:
+			value = scaleValue(value)
+			for i in range(1, len(value)):
+				'''
+				Value 0 = quarter = dict key. Fill all stock variables to key
+				values
+				'''
+				stock_dict[value[0]][key_list[first_element]] = value[i]
+				if first_element < len(key_list):
+					first_element += 1
+
+print(stock_dict)
