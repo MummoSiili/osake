@@ -99,6 +99,14 @@ def isInteger(n):
 	else:
 		return float(n).is_integer()
 
+def isFloat(n):
+	try:
+		float(n)
+	except ValueError:
+		return False
+	else:
+		return True
+
 def scaleValue(csv_line):
 	'''
 	Scale number by multiply it correspondingly:
@@ -110,10 +118,14 @@ def scaleValue(csv_line):
 	Return modified list
 	'''
 	modified_list = []
+	multiplier = 0
 
 	for value in csv_line:
-		if str.isdecimal(value[-1:]):
-			modified_list.append(value)
+		if isInteger(value):
+			modified_list.append(int(value))
+		elif isFloat(value):
+			modified_list.append(float(value))
+
 		else:
 			if value[-1:] == 'B' or value[-1:] == 'b':
 				multiplier = 1000000000
@@ -124,19 +136,14 @@ def scaleValue(csv_line):
 			else:
 				modified_list.append(value)
 
-			if isInteger(value[:-1]) == True:
-				value = int(value[:-1])
-				palaute = value * multiplier
-				value = str(palaute)	# replace original value
-				modified_list.append(value)
-
-			else:
-				if isInteger(value[:-1]) and isInteger(value[:-2])== False: # This will skip quarterly string
-					pass
+			if multiplier > 0:
+				if isInteger(value[:-1]):
+					value = int(value[:-1])
+					value = value * multiplier
+					modified_list.append(value)
 				else:
 					value = float(value[:-1])
-					palaute = value * multiplier
-					value = str(palaute)	# replace original value
+					value = value * multiplier
 					modified_list.append(value)
 
 	return modified_list
@@ -154,10 +161,10 @@ def getPB(stock_dict):
 	palautus_lista = []
 	try:
 		for value in stock_dict:
-			shares = int(stock_dict[value]['shares'])
-			price = float(stock_dict[value]['price'])
-			assets = float(stock_dict[value]['assets'])
-			liabilities = float(stock_dict[value]['liabilities'])
+			shares = stock_dict[value]['shares']
+			price = stock_dict[value]['price']
+			assets = stock_dict[value]['assets']
+			liabilities = stock_dict[value]['liabilities']
 			book_per_share = (assets - liabilities) / shares
 			pb_value = price / book_per_share
 			palautus_lista.append(round(pb_value, 2))
@@ -282,4 +289,5 @@ with open(osake_file[1]) as csv_file:
 
 list_of_PB = getPB(stock_dict)
 list_of_PE = getPE(stock_dict)
+print(stock_dict)
 print(list_of_PB)
