@@ -141,6 +141,42 @@ def scaleValue(csv_line):
 
 	return modified_list
 
+def displayData2(stock_dict):
+	print("quarter\t\t	P/B")
+	print("-------\t\t	---")
+	for x,y in stock_dict.items():
+		print(x,y)
+
+def getPB(stock_dict):
+	'''
+	Return a list of PB values
+	'''
+	palautus_lista = []
+	try:
+		for value in stock_dict:
+			shares = int(stock_dict[value]['shares'])
+			price = float(stock_dict[value]['price'])
+			assets = float(stock_dict[value]['assets'])
+			liabilities = float(stock_dict[value]['liabilities'])
+			book_per_share = (assets - liabilities) / shares
+			pb_value = price / book_per_share
+			palautus_lista.append(round(pb_value, 2))
+
+	except Exception as e:
+		raise
+
+	return palautus_lista
+
+def getPE(stock_dict):
+	'''
+	Return a list of PE values
+	'''
+	palautus_lista = []
+	try:
+		pass
+	except Exception as e:
+		raise
+
 '''
 GLOBAL VARIABLES
 '''
@@ -228,7 +264,6 @@ with open(osake_file[1]) as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	row = 0
 
-
 	for value in csv_reader:
 		first_element = 0
 		if row == 0:
@@ -244,4 +279,7 @@ with open(osake_file[1]) as csv_file:
 				if first_element < len(key_list):
 					first_element += 1
 
-print(stock_dict)
+
+list_of_PB = getPB(stock_dict)
+list_of_PE = getPE(stock_dict)
+print(list_of_PB)
