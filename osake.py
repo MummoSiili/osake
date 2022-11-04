@@ -174,21 +174,65 @@ def getPB(stock_dict):
 
 	return palautus_lista
 
-def getPE(stock_dict):
+def getPS(stock_dict):
 	'''
-	Return a list of PE values
+	Return a list of PS values
 	'''
 	palautus_lista = []
+
 	try:
-		pass
+		for value in stock_dict:
+			price = stock_dict[value]['price']
+			sales = stock_dict[value]['revenue']
+			shares = stock_dict[value]['shares']
+			pe_value = price / (sales / shares)
+			palautus_lista.append(round(pe_value, 2))
 	except Exception as e:
 		raise
+
+	return palautus_lista
+
+def getPSTTM(list_of_PS):
+	'''
+	Return a list of PS TTM values. Values in str(). Place * mark after value if
+	there is no enough quarters (<4)
+	'''
+	palautus_lista = []
+	list_lenght = len(list_of_PS)
+	ps_ttm = 0.0
+
+	if list_lenght < 4:
+		for value in list_of_PS:
+			ps_ttm += value
+			palaute = str(f'{ps_ttm:.2f}') + '*'
+			palautus_lista.append(palaute)
+
+	if list_lenght == 4:
+		mark = 0
+		for value in list_of_PS:
+			ps_ttm += value
+			if mark < 3:
+				palaute = str(f'{ps_ttm:.2f}') + '*'
+				mark += 1
+			else:
+				palaute = str(f'{ps_ttm:.2f}')
+
+			palautus_lista.append(palaute)
+
+	if list_lenght > 4:
+		for value in list_of_PS[-4:]:
+			ps_ttm += value
+			palaute = str(f'{ps_ttm:.2f}')
+			palautus_lista.append(palaute)
+
+	return palautus_lista
 
 '''
 GLOBAL VARIABLES
 '''
 list_of_PB = []
 list_of_PS = []
+list_of_PSTTM = []
 list_of_quarters = []
 list_of_PE = []
 list_of_stock_price = []
@@ -197,31 +241,6 @@ key_list = []
 stock_dict = {}
 
 osake_file = sys.argv
-
-'''
-Take CSV file as command line argument e.g. osake.py osake.csv
-'''
-
-'''
-
-with open(osake_file[1]) as csv_file:
-	csv_reader = csv.reader(csv_file, delimiter=',')
-	row = 0
-
-	for value in csv_reader:
-		if row == 0:
-			# skip first row
-			row += 1
-		else:
-			row += 1
-			value = scaleValue(value)
-			list_of_PB.append(calcPB(value[1], value[2], value[3], value[4]))
-			list_of_PS.append(calcPS(value[1], value[2], value[0]))
-			list_of_quarters.append(value[5])
-			list_of_stock_price.append(value[1])
-
-displayData(list_of_quarters, list_of_PB, list_of_PS, list_of_stock_price)
-'''
 
 '''
 Version 2
@@ -288,6 +307,9 @@ with open(osake_file[1]) as csv_file:
 
 
 list_of_PB = getPB(stock_dict)
-list_of_PE = getPE(stock_dict)
+list_of_PS = getPS(stock_dict)
+list_of_PSTTM = getPSTTM(list_of_PS)
 print(stock_dict)
 print(list_of_PB)
+print(list_of_PS)
+print(list_of_PSTTM)
