@@ -87,9 +87,10 @@ def displayData(*args):
 	print('_______\t\t ___\t ____\t ________')
 
 	for i in range(rows):
-		ttm_i = i + 1
-		ps_ttm = calcPSTTM(args[2][:ttm_i], args[3][i])
-		print(args[0][i]+'\t\t'+args[1][i]+'\t'+args[2][i]+'\t'+ps_ttm)
+		line = i + 1
+		print('{0}\t\t{1}\t{2}\t{3}'
+		.format(args[0][i], args[1][i], args[2][i], args[3][i]))
+
 
 def isInteger(n):
 	try:
@@ -227,6 +228,15 @@ def getPSTTM(list_of_PS):
 
 	return palautus_lista
 
+def getQuarters(stock_dict):
+	# Return a list of quarters from dictionary keys
+	palautus_lista = []
+
+	for x in stock_dict:
+		palautus_lista.append(x)
+
+	return palautus_lista
+
 '''
 GLOBAL VARIABLES
 '''
@@ -309,7 +319,5 @@ with open(osake_file[1]) as csv_file:
 list_of_PB = getPB(stock_dict)
 list_of_PS = getPS(stock_dict)
 list_of_PSTTM = getPSTTM(list_of_PS)
-print(stock_dict)
-print(list_of_PB)
-print(list_of_PS)
-print(list_of_PSTTM)
+list_of_quarters = getQuarters(stock_dict)
+displayData(list_of_quarters, list_of_PB, list_of_PS, list_of_PSTTM)
