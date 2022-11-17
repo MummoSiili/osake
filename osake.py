@@ -87,7 +87,6 @@ def displayData(*args):
 	print('_______\t\t ___\t ____\t ________')
 
 	for i in range(rows):
-		line = i + 1
 		print('{0}\t\t{1}\t{2}\t{3}'
 		.format(args[0][i], args[1][i], args[2][i], args[3][i]))
 
@@ -201,30 +200,23 @@ def getPSTTM(list_of_PS):
 	palautus_lista = []
 	list_lenght = len(list_of_PS)
 	ps_ttm = 0.0
+	round = 0
 
-	if list_lenght < 4:
-		for value in list_of_PS:
+	for value in list_of_PS:
+		if round < 4:
 			ps_ttm += value
-			palaute = str(f'{ps_ttm:.2f}') + '*'
-			palautus_lista.append(palaute)
+			palautus_lista.append(ps_ttm)
+			round += 1
+		else:
+			buffer_value = 0.0 # clear before each round
+			for i in palautus_lista[-3:]:
+				# Last three values of the list.
+				# Add lates result to list
+				buffer_value += i
 
-	if list_lenght == 4:
-		mark = 0
-		for value in list_of_PS:
-			ps_ttm += value
-			if mark < 3:
-				palaute = str(f'{ps_ttm:.2f}') + '*'
-				mark += 1
-			else:
-				palaute = str(f'{ps_ttm:.2f}')
-
-			palautus_lista.append(palaute)
-
-	if list_lenght > 4:
-		for value in list_of_PS[-4:]:
-			ps_ttm += value
-			palaute = str(f'{ps_ttm:.2f}')
-			palautus_lista.append(palaute)
+			ps_ttm = buffer_value + value
+			palautus_lista.append(ps_ttm)
+			round +=1
 
 	return palautus_lista
 
