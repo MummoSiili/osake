@@ -200,20 +200,32 @@ def getPSTTM(list_of_PS):
 	palautus_lista = []
 	list_lenght = len(list_of_PS)
 	ps_ttm = 0.0
-	print(list_of_PS)
-	
-	for i in range(list_lenght):
-		if (i < 4):
-			ps_ttm += list_of_PS[i]
-			palautus_lista.append(ps_ttm)
-			print(i)
-		
-		#ps_ttm = 0.0 
-		start_point = i - 4
-		for x in list_of_PS[start_point:i]:
-			ps_ttm += x
-		palautus_lista.append(ps_ttm)
+	start = 0
+	gap = 0
 
+	for value in list_of_PS:
+		if (gap < 4):
+		# First items when list is smaller than 4
+			ps_ttm += value
+			palautus_lista.append(round(ps_ttm, 2))
+			gap += 1
+		else:
+		# Gap of four items with starting point moving along
+			ps_ttm = 0.0
+			start += 1
+			gap += 1
+			for four in list_of_PS[start:gap]:
+				ps_ttm += four
+				
+			palautus_lista.append(round(ps_ttm, 2))
+
+	if list_lenght < 4:
+		for i in range(len(palautus_lista)):
+			palautus_lista[i] = str(palautus_lista[i]) + '*'
+	else:
+		for i in range(3):
+			palautus_lista[i] = str(palautus_lista[i]) + '*'
+	
 	return palautus_lista
 
 def getQuarters(stock_dict):
