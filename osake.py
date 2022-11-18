@@ -200,23 +200,19 @@ def getPSTTM(list_of_PS):
 	palautus_lista = []
 	list_lenght = len(list_of_PS)
 	ps_ttm = 0.0
-	round = 0
-
-	for value in list_of_PS:
-		if round < 4:
-			ps_ttm += value
+	print(list_of_PS)
+	
+	for i in range(list_lenght):
+		if (i < 4):
+			ps_ttm += list_of_PS[i]
 			palautus_lista.append(ps_ttm)
-			round += 1
-		else:
-			buffer_value = 0.0 # clear before each round
-			for i in palautus_lista[-3:]:
-				# Last three values of the list.
-				# Add lates result to list
-				buffer_value += i
-
-			ps_ttm = buffer_value + value
-			palautus_lista.append(ps_ttm)
-			round +=1
+			print(i)
+		
+		#ps_ttm = 0.0 
+		start_point = i - 4
+		for x in list_of_PS[start_point:i]:
+			ps_ttm += x
+		palautus_lista.append(ps_ttm)
 
 	return palautus_lista
 
