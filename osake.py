@@ -43,41 +43,11 @@ def calcPS(stock_price, shares, sales):
 	PS_value = share_price / (total_sales / amount_shares)
 	return f'{PS_value:.2f}'
 
-def calcPSTTM(PS_list, stock_price):
-	'''
-	Combine four latest quarters together and return sum
-	'''
-	list_lenght = len(PS_list)
-	share_price = float(stock_price)
-	float_value = 0.0 # format value
-	ps_ttm = 0.0
+# Return PSTTM value
+def calcPSTTM(stock_price, ps_ttm):
+	palautus = stock_price / ps_ttm
 
-	if list_lenght < 4:
-		# List less than four quarters are not TTM. Return with mark.
-		for value in PS_list:
-			float_value += float(value)
-
-		ps_ttm = share_price / float_value
-		palaute = str(f'{ps_ttm:.2f}') + '*'
-		return palaute
-
-	elif list_lenght == 4:
-
-		for value in PS_list:
-			float_value += float(value)
-
-		ps_ttm = share_price / float_value
-		return str(f'{ps_ttm:.2f}')
-
-	elif list_lenght > 4:
-
-		for value in PS_list[-4:]:
-			# Last four quarters of the list
-			float_value += float(value)
-
-		ps_ttm = share_price / float_value
-		return str(f'{ps_ttm:.2f}')
-
+	return palautus
 
 def displayData(*args):
 	# How many lines will be printed
@@ -192,31 +162,34 @@ def getPS(stock_dict):
 
 	return palautus_lista
 
-def getPSTTM(list_of_PS):
+def getPSTTM(list_of_PS, list_of_stock_price):
 	'''
 	Return a list of PS TTM values. Values in str(). Place * mark after value if
 	there is no enough quarters (<4)
 	'''
 	palautus_lista = []
-	list_lenght = len(list_of_PS)
 	ps_ttm = 0.0
 	start = 0
 	gap = 0
+	list_lenght = len(list_of_PS)
 
 	for value in list_of_PS:
 		if (gap < 4):
 		# First items when list is smaller than 4
 			ps_ttm += value
+			ps_ttm = calcPSTTM(list_of_stock_price[gap], ps_ttm)
 			palautus_lista.append(round(ps_ttm, 2))
 			gap += 1
 		else:
 		# Gap of four items with starting point moving along
+			gap_buffer = gap
 			ps_ttm = 0.0
 			start += 1
 			gap += 1
 			for four in list_of_PS[start:gap]:
 				ps_ttm += four
-				
+
+			ps_ttm = calcPSTTM(list_of_stock_price[gap_buffer], ps_ttm)
 			palautus_lista.append(round(ps_ttm, 2))
 
 	if list_lenght < 4:
@@ -225,7 +198,7 @@ def getPSTTM(list_of_PS):
 	else:
 		for i in range(3):
 			palautus_lista[i] = str(palautus_lista[i]) + '*'
-	
+
 	return palautus_lista
 
 def getQuarters(stock_dict):
@@ -234,6 +207,15 @@ def getQuarters(stock_dict):
 
 	for x in stock_dict:
 		palautus_lista.append(x)
+
+	return palautus_lista
+
+# Return list of stock prices
+def getStockPrice(stock_dict):
+	palautus_lista = []
+
+	for value in stock_dict:
+		palautus_lista.append(stock_dict[value]['price'])
 
 	return palautus_lista
 
@@ -318,6 +300,7 @@ with open(osake_file[1]) as csv_file:
 
 list_of_PB = getPB(stock_dict)
 list_of_PS = getPS(stock_dict)
-list_of_PSTTM = getPSTTM(list_of_PS)
+list_of_stock_price = getStockPrice(stock_dict)
+list_of_PSTTM = getPSTTM(list_of_PS, list_of_stock_price)
 list_of_quarters = getQuarters(stock_dict)
 displayData(list_of_quarters, list_of_PB, list_of_PS, list_of_PSTTM)
