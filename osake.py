@@ -176,9 +176,9 @@ def getPSTTM(list_of_revenue, list_of_stock_price, list_of_shares):
 	for value in list_of_revenue:
 		if (gap < 4):
 		# First items when list is smaller than 4
-			ps_ttm += value
-			ps_ttm = calcPSTTM(list_of_stock_price[gap], ps_ttm, list_of_shares[gap])
-			palautus_lista.append(round(ps_ttm, 2))
+			ps_ttm = ps_ttm + float(value)
+			ps_ttm_what = calcPSTTM(list_of_stock_price[gap], ps_ttm, list_of_shares[gap])
+			palautus_lista.append(round(ps_ttm_what, 2))
 			gap += 1
 		else:
 		# Gap of four items with starting point moving along
