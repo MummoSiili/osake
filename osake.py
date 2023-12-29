@@ -44,8 +44,8 @@ def calcPS(stock_price, shares, sales):
 	return f'{PS_value:.2f}'
 
 # Return PSTTM value
-def calcPSTTM(stock_price, ps_ttm):
-	palautus = stock_price / ps_ttm
+def calcPSTTM(stock_price, ps_ttm, shares):
+	palautus = stock_price / (ps_ttm / shares)
 
 	return palautus
 
@@ -162,7 +162,7 @@ def getPS(stock_dict):
 
 	return palautus_lista
 
-def getPSTTM(list_of_PS, list_of_stock_price):
+def getPSTTM(list_of_revenue, list_of_stock_price, list_of_shares):
 	'''
 	Return a list of PS TTM values. Values in str(). Place * mark after value if
 	there is no enough quarters (<4)
@@ -171,13 +171,13 @@ def getPSTTM(list_of_PS, list_of_stock_price):
 	ps_ttm = 0.0
 	start = 0
 	gap = 0
-	list_lenght = len(list_of_PS)
+	list_lenght = len(list_of_revenue)
 
-	for value in list_of_PS:
+	for value in list_of_revenue:
 		if (gap < 4):
 		# First items when list is smaller than 4
 			ps_ttm += value
-			ps_ttm = calcPSTTM(list_of_stock_price[gap], ps_ttm)
+			ps_ttm = calcPSTTM(list_of_stock_price[gap], ps_ttm, list_of_shares[gap])
 			palautus_lista.append(round(ps_ttm, 2))
 			gap += 1
 		else:
@@ -186,10 +186,10 @@ def getPSTTM(list_of_PS, list_of_stock_price):
 			ps_ttm = 0.0
 			start += 1
 			gap += 1
-			for four in list_of_PS[start:gap]:
+			for four in list_of_revenue[start:gap]:
 				ps_ttm += four
 
-			ps_ttm = calcPSTTM(list_of_stock_price[gap_buffer], ps_ttm)
+			ps_ttm = calcPSTTM(list_of_stock_price[gap_buffer], ps_ttm, list_of_shares[gap_buffer])
 			palautus_lista.append(round(ps_ttm, 2))
 
 	if list_lenght < 4:
@@ -216,6 +216,22 @@ def getStockPrice(stock_dict):
 
 	for value in stock_dict:
 		palautus_lista.append(stock_dict[value]['price'])
+
+	return palautus_lista
+
+def getRevenue(stock_dict):
+	palautus_lista = []
+
+	for value in stock_dict:
+		palautus_lista.append(stock_dict[value]['revenue'])
+
+	return palautus_lista
+
+def getShareAmount(stock_dict):
+	palautus_lista = []
+
+	for value in stock_dict:
+		palautus_lista.append(stock_dict[value]['shares'])
 
 	return palautus_lista
 
@@ -301,6 +317,8 @@ with open(osake_file[1]) as csv_file:
 list_of_PB = getPB(stock_dict)
 list_of_PS = getPS(stock_dict)
 list_of_stock_price = getStockPrice(stock_dict)
-list_of_PSTTM = getPSTTM(list_of_PS, list_of_stock_price)
+list_of_revenue = getRevenue(stock_dict)
+list_of_shares = getShareAmount(stock_dict)
+list_of_PSTTM = getPSTTM(list_of_revenue, list_of_stock_price, list_of_shares)
 list_of_quarters = getQuarters(stock_dict)
 displayData(list_of_quarters, list_of_PB, list_of_PS, list_of_PSTTM)
