@@ -4,7 +4,6 @@ import pymongo
 
 # Read 'data.csv' file and return a list
 
-
 def read_csv_file(file_name):
 
     list_return = []
@@ -30,21 +29,84 @@ def add_to_db(usage_list, db_collection):
 
     db_collection.insert_many(db_list)
 
+def show_tickers(list):
+    print('current tickers:')
+    for value in list:
+        print(value)
+def add_remove_collection(database):
+    while True:
+        collection_list = database.list_collection_names()  # real all tickers to list
+        print('''
+(1) add ticker
+(2) remove ticker
+(3) exit
+choose what to do: ''', end='')
+        valinta = input()
 
+        if valinta == '1':
+            show_tickers(collection_list)
+
+            while True:
+                # loop until new ticker is seen
+                stock_ticker = input('give name of stock ticker: ')
+                if stock_ticker in collection_list:
+                    print('ticker already exists. choose another one.')
+                else:
+                    break
+
+            testdict = {'_id': 1, 'quarter': '', 'shares': '', 'revenue': '', 'assets': '', 'liabilities': '',
+                        'price': ''}
+            dbret = database[stock_ticker]
+            dbret.insert_one(testdict)
+
+        elif valinta == '2':
+            show_tickers(collection_list)
+            while True:
+                # loop until ticker is mathed
+                stock_ticker = input('remove ticker: ')
+                if stock_ticker in collection_list:
+                    removecol = database[stock_ticker]
+                    removecol.drop()
+                    break
+                else:
+                    print('choose correct ticker!')
+
+        elif valinta == '3':
+            break
+
+
+def read_collections(database):
+    show_collections(database)
+    collection_list = database.list_collection_names()
+    while True:
+        valinta = input('write ticker: ')
+        if valinta in collection_list:
+            break
+        else:
+            print('choose correct ticker!')
+
+    collection = database[valinta]
+    for value in collection.find():
+        print(value)
+
+def show_collections(col):
+    collection_list = col.list_collection_names()
+    print('current tickers:')
+    for value in collection_list:
+        print(value)
 def main():
     # create and use db
     db_client = pymongo.MongoClient('mongodb://localhost:27017')
     mydb = db_client['stock_db']  # define db
 
-
     while True:
         print('''
-    (1) import CSV file
-    (2) 
-    (3) 
-    (4) exit
+(1) import CSV file
+(2) add or remove ticker
+(3) read data
+(4) exit
 
-    Choose what to do? ''', end='')
+Choose what to do? ''', end='')
 
         valinta = int(input())
 
@@ -55,11 +117,12 @@ def main():
             csv_list = read_csv_file(file_name)
             add_to_db(csv_list, db_collection)
         elif valinta == 2:
-            pass
+            add_remove_collection(mydb)
         elif valinta == 3:
-            pass
+            read_collections(mydb)
         elif valinta == 4:
             sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
